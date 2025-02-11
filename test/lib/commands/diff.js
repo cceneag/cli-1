@@ -2,6 +2,7 @@ const t = require('tap')
 const { join, extname } = require('node:path')
 const MockRegistry = require('@npmcli/mock-registry')
 const { load: loadMockNpm } = require('../../fixtures/mock-npm')
+const { Arborist } = require('@npmcli/arborist')
 
 const jsonifyTestdir = (obj) => {
   for (const [key, value] of Object.entries(obj || {})) {
@@ -386,6 +387,9 @@ t.test('single arg', async t => {
   })
 
   t.test('missing actual tree', async t => {
+    let runsMockInPacote = false
+    let runsMock = false
+    let count = 0
     const { output } = await mockDiff(t, {
       diff: 'lorem',
       prefixDir: {
@@ -395,9 +399,17 @@ t.test('single arg', async t => {
         },
       },
       mocks: {
-        '@npmcli/arborist': class {
-          constructor () {
-            throw new Error('ERR')
+        '@npmcli/arborist': class extends Arborist {
+          constructor (...args) {
+            count = count + 1
+            const e = new Error('ERR')
+            if (e.stack.includes('pacote')) {
+              runsMockInPacote = true
+              super(...args)
+            } else {
+              runsMock = true
+              throw e
+            }
           }
         },
       },
@@ -407,6 +419,9 @@ t.test('single arg', async t => {
       exec: [],
     })
 
+    t.ok(runsMockInPacote)
+    t.ok(runsMock)
+    t.same(count, 2)
     t.match(output, 'lorem')
     t.match(output, /-\s*"version": "2\.2\.2"/)
     t.match(output, /\+\s*"version": "2\.0\.0"/)
