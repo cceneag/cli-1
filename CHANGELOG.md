@@ -1,5 +1,9 @@
 # Changelog
 
+## [10.9.3](https://github.com/npm/cli/compare/v10.9.2...v10.9.3) (2025-04-23)
+### Bug Fixes
+* [`e510f14`](https://github.com/npm/cli/commit/e510f14bf6a20d67e7b37c3f25ff271d9f7a0da5) [#8248](https://github.com/npm/cli/pull/8248) docs: 'pacakge' -> 'package' (#8248) (@t3hmrman)
+
 ## [10.9.2](https://github.com/npm/cli/compare/v10.9.1...v10.9.2) (2024-12-04)
 ### Dependencies
 * [`ae9345e`](https://github.com/npm/cli/commit/ae9345e352a30151c5326889d7a23b7289894e99) [#7959](https://github.com/npm/cli/pull/7959) `@npmcli/run-script@9.0.2`
